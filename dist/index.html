@@ -4,9 +4,27 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="main.css" type="text/css">
     <title>DIGICODE PixiShapes</title>
 </head>
 <body>
+    <main class="main-section">
+        <div class="inner-section">
+            <span>Number of current shapes:</span>
+            <span id="shapesAmount" class="shapes">0</span>
+            <span>Surface area occupied by shapes:</span>
+            <span id="surfaceArea" class="area-gravity">0</span>
+        </div>
+        <canvas id="canvas"></canvas>
+        <div class="inner-section bottom">
+            <button class="button minus">-</button>
+            <button class="button plus">+</button>
+            <span id="shapesSecond" class="shapes bottom-height">Number of shapes per second</span>
+            <button class="button minus">-</button>
+            <button class="button plus">+</button>
+            <span id="gravityValue" class="area-gravity bottom-height">Gravity Value</span>
+        </div>
+    </main>
     <script src="index.js"></script>
 </body>
 </html>
