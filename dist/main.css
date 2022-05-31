@@ -66,6 +66,7 @@ body {
 }
 
 .minus {
+    padding: 0 1.7vw;
     border-top-left-radius: var(--border-radius);
     border-bottom-left-radius: var(--border-radius);
 }
