@@ -1,27 +1,22 @@
 import { Graphics } from "@pixi/graphics";
-import Shape from "./Shape";
+import { Container } from "pixi.js";
 
-export default class Hexagon extends Shape {
-    private _side: number = 56;
-
-    constructor(xPos: number, yPos: number, color: number) {
-        super();
-        this._shape = new Graphics();
-        this._shape.x = xPos;
-        this._shape.y = yPos;
-        this._shape.beginFill(color, 1);
-        this._shape.lineStyle(0, color, 1);
-        this._shape.moveTo(0, 0);
-        this._shape.lineTo(50, 25);
-        this._shape.lineTo(50, 75);
-        this._shape.lineTo(0, 100);
-        this._shape.lineTo(-50, 75);
-        this._shape.lineTo(-50, 25);
-        this._shape.lineTo(0, 0);
-        this._shape.endFill();
-        this._type = "Hexagon";
-        this._ownHeight = 100;
-        this._area = (3 * 1.73) / 2 * (this._side ** 2);
-
-    }
+export function createHexagon(xPos: number, yPos: number, color: number): Container {
+    const container: Container = new Container();
+    container.position.set(xPos, yPos);
+    container.height = 100;
+    const hexagon: Graphics = new Graphics();
+    hexagon.beginFill(color, 1);
+    hexagon.lineStyle(0, color, 1);
+    hexagon.moveTo(0, 0);
+    hexagon.lineTo(50, 25);
+    hexagon.lineTo(50, 75);
+    hexagon.lineTo(0, 100);
+    hexagon.lineTo(-50, 75);
+    hexagon.lineTo(-50, 25);
+    hexagon.lineTo(0, 0);
+    hexagon.endFill();
+    container.addChild(hexagon);
+    return container;
 }
+// this._area = (3 * 1.73) / 2 * (this._side ** 2);

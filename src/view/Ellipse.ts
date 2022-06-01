@@ -1,16 +1,11 @@
 import { Graphics } from "@pixi/graphics";
-import Shape from "./Shape";
+import { Container } from "pixi.js";
 
-export default class Ellipse extends Shape {
-    constructor(xPos: number, yPos: number, width: number, height: number, color: number) {
-        super();
-        this._shape = new Graphics();
-        this._shape.lineStyle(0);
-        this._shape.beginFill(color, 1);
-        this._shape.drawEllipse(xPos, yPos, width, height);
-        this._shape.endFill();
-        this._type = "Ellipse";
-        this._ownHeight = 130;
-        this._area = Math.PI * width * height;
-    }
+export function createEllipse(xPos: number, yPos: number, width: number, height: number, color: number): Container {
+    const container: Container = new Container();
+    container.position.set(xPos, yPos);
+    container.height = 100;
+    container.addChild(new Graphics().lineStyle(0).beginFill(color, 1).drawEllipse(0, 0, width, height).endFill());
+    return container;
 }
+// this._area = Math.PI * width * height;

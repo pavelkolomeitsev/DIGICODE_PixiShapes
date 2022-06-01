@@ -8,5 +8,5 @@ export function getRandomColor(): number {
 }
 
 export function getXPos(): number {
-    return Math.floor(Math.random() * 550) + 50;
+    return (Math.floor(Math.random() * 700) + 50);
 }

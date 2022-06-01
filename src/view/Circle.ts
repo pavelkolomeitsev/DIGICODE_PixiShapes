@@ -1,16 +1,10 @@
+import { Container } from "@pixi/display";
 import { Graphics } from "@pixi/graphics";
-import Shape from "./Shape";
 
-export default class Circle extends Shape {
-    constructor(xPos: number, yPos: number, color: number, radius: number) {
-        super();
-        this._shape = new Graphics();
-        this._shape.lineStyle(0);
-        this._shape.beginFill(color, 1);
-        this._shape.drawCircle(xPos, yPos, radius);
-        this._shape.endFill();
-        this._type = "Circle";
-        this._ownHeight = 130;
-        this._area = Math.PI * radius * radius;
-    }
-}                                                                              
+export function createCircle(xPos: number, yPos: number, color: number, radius: number): Container {
+    const container: Container = new Container();
+    container.position.set(xPos, yPos);
+    container.height = 100;
+    container.addChild(new Graphics().lineStyle(0).beginFill(color, 1).drawCircle(0, 0, radius).endFill());
+    return container;
+}

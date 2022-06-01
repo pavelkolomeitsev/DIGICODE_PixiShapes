@@ -1,15 +1,11 @@
-import { Graphics } from "pixi.js";
-import Shape from "./Shape";
+import { Container, Graphics } from "pixi.js";
 
-export default class Rectangle extends Shape {
-    constructor(xPos: number, yPos: number, width: number, height: number, color: number) {
-        super();
-        this._shape = new Graphics();
-        this._shape.beginFill(color, 1);
-        this._shape.drawRect(xPos / 2, yPos, width, height);
-        this._shape.endFill();
-        this._type = "Rectangle";
-        this._ownHeight = 100;
-        this._area = width * height;
-    }
+export function createRectangle(xPos: number, yPos: number, width: number, height: number, color: number): Container {
+    const container: Container = new Container();
+    container.position.set(xPos, yPos);
+    container.height = 100;
+    container.addChild(new Graphics().beginFill(color, 1).drawRect(0, 0, width, height).endFill());
+    return container;
 }
+
+// this._area = width * height;
