@@ -1,9 +1,6 @@
-import { Container, Graphics } from "pixi.js";
+import { Graphics } from "pixi.js";
 
-export function createTriangle(xPos: number, yPos: number, width: number, height: number, color: number, angle: number): Container {
-    const container: Container = new Container();
-    container.position.set(xPos, yPos);
-    container.height = 100;
+export function createTriangle(width: number, height: number, color: number, angle: number): Graphics {
     const triangle: Graphics = new Graphics();
     triangle.beginFill(color, 1);
     triangle.lineStyle(0, color, 1);
@@ -13,8 +10,5 @@ export function createTriangle(xPos: number, yPos: number, width: number, height
     triangle.lineTo(height, 0);
     triangle.endFill();
     triangle.angle = angle;
-    container.addChild(triangle);
-    return container;
+    return triangle;
 }
-
-// this._area = (width * height) / 2;
