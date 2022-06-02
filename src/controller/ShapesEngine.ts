@@ -7,6 +7,7 @@ import { createPentagon } from "../view/Pentagon";
 import { createRandomShape } from "../view/RandomShape";
 import { createRectangle } from "../view/Rectangle";
 import { createTriangle } from "../view/Triangle";
+import Observer from "./Observer";
 import { CONTAINERS_HEIGHT, getRandomColor, getXPos, INTERVAL, MAX_GRAVITY_VALUE, MIN_GRAVITY_VALUE, MIN_SHAPES_AMOUNT } from "./utils";
 
 export default class ShapesEngine {
@@ -15,6 +16,8 @@ export default class ShapesEngine {
     private _gravityValue: number = 2; 
     private _bottomBorder: number = 0;
     private _shapesAmount: number = 0;
+    private _shapesAmountObserver: Observer = null;
+    private _surfaceAreaObserver: Observer = null;
     private _shapesAmountElement: HTMLSpanElement = null;
     private _surfaceArea: HTMLSpanElement = null;
     private _shapesSecondMinus: HTMLButtonElement = null;
@@ -25,6 +28,8 @@ export default class ShapesEngine {
     constructor(app: Application, model: Model) {
         this._app = app;
         this._model = model;
+        this._shapesAmountObserver = new Observer();
+        this._surfaceAreaObserver = new Observer();
 
         this._init();
         this._assignClicks();
@@ -39,9 +44,6 @@ export default class ShapesEngine {
                     container.y = -CONTAINERS_HEIGHT;
                 }
             });
-            // implement observers?
-            this._shapesAmountElement.innerText = this._shapesAmount.toString();
-            this._surfaceArea.innerText = this._model.getAreasSurface().toFixed(2);
         });
     }
 
@@ -53,6 +55,9 @@ export default class ShapesEngine {
         this._gravityValuePlus = document.getElementById("gravityValuePlus") as HTMLButtonElement;
         this._shapesSecondMinus = document.getElementById("shapesSecondMinus") as HTMLButtonElement;
         this._shapesSecondPlus = document.getElementById("shapesSecondPlus") as HTMLButtonElement;
+
+        this._shapesAmountObserver.subscribe((shapesAmount: string) => this._shapesAmountElement.innerText = shapesAmount);
+        this._surfaceAreaObserver.subscribe((surfaceArea: string) => this._surfaceArea.innerText = surfaceArea);
     }
 
     private _assignClicks(): void {
@@ -76,6 +81,8 @@ export default class ShapesEngine {
             this._app.stage.removeChildAt(0);
             this._model.removeArea();
             this._shapesAmount--;
+            this._shapesAmountObserver.broadcast(this._shapesAmount.toString());
+            this._surfaceAreaObserver.broadcast(this._model.getAreasSurface().toFixed(2));
         }, false);
         
         this._shapesSecondPlus.addEventListener("click", () => {
@@ -83,6 +90,8 @@ export default class ShapesEngine {
             this._app.stage.addChild(container);
             this._model.addArea(area);
             this._shapesAmount++;
+            this._shapesAmountObserver.broadcast(this._shapesAmount.toString());
+            this._surfaceAreaObserver.broadcast(this._model.getAreasSurface().toFixed(2));
         }, false);
     }
 
@@ -94,6 +103,8 @@ export default class ShapesEngine {
                 this._model.addArea(area);
                 this._app.stage.addChild(container); // add container to the stage
                 this._shapesAmount++;
+                this._shapesAmountObserver.broadcast(this._shapesAmount.toString());
+                this._surfaceAreaObserver.broadcast(this._model.getAreasSurface().toFixed(2));
             }
         }, INTERVAL);
     }
@@ -152,6 +163,8 @@ export default class ShapesEngine {
         this._model.addArea(area);
         this._app.stage.addChild(container);
         this._shapesAmount++;
+        this._shapesAmountObserver.broadcast(this._shapesAmount.toString());
+        this._surfaceAreaObserver.broadcast(this._model.getAreasSurface().toFixed(2));
     };
 
     private _createContainer(xPos: number, yPos: number, shape: Graphics): Container {
@@ -167,6 +180,8 @@ export default class ShapesEngine {
             parent.removeChildAt(index);
             this._model.removeAreaByIndex(index);
             this._shapesAmount--;
+            this._shapesAmountObserver.broadcast(this._shapesAmount.toString());
+            this._surfaceAreaObserver.broadcast(this._model.getAreasSurface().toFixed(2));
         };
         container.on("pointerdown", onShapePointer, null);
         return container;
