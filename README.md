@@ -1,4 +1,5 @@
 # DIGICODE_PixiShapes
+# Steps to install
 1. Open IDE (VSCode for example)
 2. Choose the folder to install the project
 3. Open terminal in IDE
