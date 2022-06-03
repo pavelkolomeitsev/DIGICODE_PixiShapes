@@ -12,6 +12,14 @@ export default class Model {
         this._areas.push(area);
     }
     
+    public getAreaByIndex(index: number): number {
+        if (this._areas.length >= 1) return this._areas[index]; // get value by index
+    }
+
+    public isInArray(area: number): boolean {
+        if (this._areas.length >= 1) return this._areas.includes(area); // check if is in array
+    }
+
     public removeArea(): void {
         if (this._areas.length >= 1) this._areas.shift(); // remove from start
     }
@@ -22,6 +30,10 @@ export default class Model {
 
     public getAreasSurface(): number {
         return (this._areas.length >= 1) ? this._areas.reduce((sum: number, current: number) => sum + current, 0) : 0;
+    }
+
+    public getAreaArray(): number[] {
+        return this._areas;
     }
 
     public get circleArea(): number {

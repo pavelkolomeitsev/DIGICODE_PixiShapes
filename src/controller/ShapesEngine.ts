@@ -121,7 +121,7 @@ export default class ShapesEngine {
 
         switch (randomShape) {
             case 1:
-                shape = createCircle( color, 50);
+                shape = createCircle(color, 50);
                 container = this._createContainer(xPos, yPos, shape);
                 return [container, this._model.circleArea];
             case 2:
@@ -170,20 +170,70 @@ export default class ShapesEngine {
     private _createContainer(xPos: number, yPos: number, shape: Graphics): Container {
         const container: Container = new Container();
         container.position.set(xPos, yPos);
-        container.height = 100;
+        container.height = CONTAINERS_HEIGHT;
         container.addChild(shape);
         container.interactive = true;
-        const onShapePointer = (event: InteractionEvent) => {
+        container.on("pointerdown", this._onShapePointer(container), this);
+        return container;
+    }
+
+    private _onShapePointer = (container: Container) => {
+        return (event: InteractionEvent) => {
             event.stopPropagation();
             const parent = container.parent;
             const index: number = parent.getChildIndex(container);
+            // note object type
+            const areaType: number = this._model.getAreaByIndex(index);
             parent.removeChildAt(index);
             this._model.removeAreaByIndex(index);
             this._shapesAmount--;
             this._shapesAmountObserver.broadcast(this._shapesAmount.toString());
             this._surfaceAreaObserver.broadcast(this._model.getAreasSurface().toFixed(2));
+            // check if exist
+            if (this._model.isInArray(areaType)) {
+                // get all indexes
+                const indexes: number[] = this._getAllIndexes(areaType);
+                // create new shape
+                const shape: Graphics = this._createNewShape(areaType);
+                // push into containers
+                this._replaceShapes(indexes, shape);
+            }
         };
-        container.on("pointerdown", onShapePointer, null);
-        return container;
+    };
+
+    private _getAllIndexes(areaType: number): number[] {
+        const indexes: number[] = [];
+        for (let i = 0; i < this._model.getAreaArray().length; i++) {
+            if (this._model.getAreaArray()[i] === areaType) indexes.push(i);
+        }
+        return indexes;
+    }
+
+    private _createNewShape(areaType: number): Graphics {
+        const color: number = getRandomColor(); // random color
+        switch (areaType) {
+            case this._model.circleArea:
+                return createCircle(color, 50);
+            case this._model.ellipseArea:
+                return createEllipse(70, 40, color);
+            case this._model.hexagonArea:
+                return createHexagon(color);
+            case this._model.pentagonArea:
+                return createPentagon(color);
+            case this._model.randomShapeArea:
+                return createRandomShape(color);
+            case this._model.rectangleArea:
+                return createRectangle(100, 60, color);
+            case this._model.triangleArea:
+                return createTriangle(100, 50, color, 80);
+        }
+    }
+
+    private _replaceShapes(indexes: number[], shape: Graphics): void {
+        for (let i = 0; i < indexes.length; i++) {
+            const container: Container = this._app.stage.getChildAt(indexes[i]) as Container;
+            container.removeChildren();
+            container.addChild(shape);
+        }
     }
 }
