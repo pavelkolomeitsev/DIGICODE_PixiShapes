@@ -230,10 +230,8 @@ export default class ShapesEngine {
     }
 
     private _replaceShapes(indexes: number[], shape: Graphics): void {
-        for (let i = 0; i < indexes.length; i++) {
-            const container: Container = this._app.stage.getChildAt(indexes[i]) as Container;
-            container.removeChildren();
-            container.addChild(shape);
-        }
+        const container: Container = (this._app.stage.getChildAt(indexes[0])) as Container;
+        container.removeChildAt(0);
+        container.addChild(shape);
     }
 }
