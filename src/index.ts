@@ -1,3 +1,4 @@
+import "./main.css";
 import * as PIXI from "pixi.js";
 import Controller from "./controller/Controller";
 
