@@ -1,14 +1,19 @@
-import { Application } from "pixi.js";
 import Model from "../model/Model";
-import ShapesEngine from "./ShapesEngine";
+import View from "../view/View";
 
 export default class Controller {
-    private _app: Application = null;
     private _model: Model = null;
 
-    constructor(app: Application) {
-        this._app = app;
+    constructor() {
         this._model = new Model();
-        new ShapesEngine(this._app, this._model).run();
+        new View(this);
+    }
+
+    public addShape(shape: string): void {
+        this._model.addShapeType(shape);
+    }
+
+    public removeShape(): string {
+        return this._model.removeShapeType();
     }
 }

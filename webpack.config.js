@@ -39,7 +39,7 @@ module.exports = {
         maxAssetSize: 512000
     },
     plugins: [
-        new HtmlWebpackPlugin({ template: './src/index.html' }),
+        new HtmlWebpackPlugin({ template: './src/index.html', minify: false, inject: false, title: "DIGICODE PixiShapes", }),
         new MiniCssExtractPlugin(),
     ]
 };
