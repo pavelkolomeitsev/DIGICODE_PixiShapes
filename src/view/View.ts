@@ -93,12 +93,7 @@ export default class View {
             ++this._shapesPerSecond;
             for (let i = 0; i < this._shapesPerSecond; i++) {
                 const [container, area, shape] = this._generateShape();
-                this._controller.addShape(shape);
-                this._shapesArea += area;
-                this._app.stage.addChild(container);
-                this._shapesAmount++;
-                this._shapesAmountObserver.broadcast(this._shapesAmount.toString());
-                this._surfaceAreaObserver.broadcast(this._shapesArea.toFixed(2).toString());
+                this._add(container, area, shape);
             }
         }, false);
     }
@@ -109,12 +104,7 @@ export default class View {
             if (nextCheck < this._app.ticker.lastTime) {
                 if (this._app.stage.children.length < MIN_SHAPES_AMOUNT) {
                     const [container, area, shape] = this._generateShape();
-                    this._controller.addShape(shape);
-                    this._shapesArea += area;
-                    this._app.stage.addChild(container); // add container to the stage
-                    this._shapesAmount++;
-                    this._shapesAmountObserver.broadcast(this._shapesAmount.toString());
-                    this._surfaceAreaObserver.broadcast(this._shapesArea.toFixed(2).toString());
+                    this._add(container, area, shape);
                 }
                 nextCheck = this._app.ticker.lastTime + INTERVAL;
             }
@@ -186,12 +176,7 @@ export default class View {
     private _onStagePointer = (event: InteractionEvent) => {
         const position: Point = event.data.getLocalPosition(this._app.stage);
         const [container, area, shape] = this._generateShape(position.x, position.y);
-        this._controller.addShape(shape);
-        this._shapesArea += area;
-        this._app.stage.addChild(container);
-        this._shapesAmount++;
-        this._shapesAmountObserver.broadcast(this._shapesAmount.toString());
-        this._surfaceAreaObserver.broadcast(this._shapesArea.toFixed(2).toString());
+        this._add(container, area, shape);
     };
 
     private _createContainer(xPos: number, yPos: number, shape: Graphics): Container {
@@ -207,36 +192,39 @@ export default class View {
     private _onShapePointer = (container: Container) => {
         return (event: InteractionEvent) => {
             event.stopPropagation();
+
             const parent = container.parent;
             const index: number = parent.getChildIndex(container);
-            // note object type
-            // const areaType: number = this._model.getAreaByIndex(index);
             parent.removeChildAt(index);
+            const shapeType: string = this._controller.removeShapeByIndex(index);
             this._shapesAmount--;
             this._shapesAmountObserver.broadcast(this._shapesAmount.toString());
-            // this._surfaceAreaObserver.broadcast(this._model.getAreasSurface().toFixed(2));
-            // check if exist
-            // if (this._model.isInArray(areaType)) {
-            //     // get all indexes
-            //     const indexes: number[] = this._getAllIndexes(areaType);
-            //     // create new shape
-            //     const shape: Graphics = this._createNewShape(areaType);
-            //     // push into containers
-            //     this._replaceShapes(indexes, shape);
-            // }
+            this._shapesArea -= this._getArea(shapeType);
+            this._surfaceAreaObserver.broadcast(this._shapesArea.toFixed(2).toString());
 
-            // const shapeType: string = this._controller.removeShape();
-            // this._shapesArea -= this._getArea(shapeType);
-            // this._surfaceAreaObserver.broadcast(this._shapesArea.toFixed(2).toString());
+            const shapes: string[] = this._controller.getAllShapes();
+            let graphicsContainer: Container;
+            let child: Graphics;
+            if (shapes.length >= 1) {
+                for (let i = 0; i < shapes.length; i++) {
+                    if (shapes[i] === shapeType) {
+                        graphicsContainer = (parent.getChildAt(i)) as Container;
+                        child = (graphicsContainer.getChildAt(0)) as Graphics;
+                        const color: number = getRandomColor();
+                        child.tint = color;
+                    }
+                }
+            }
         };
     };
 
-    private _getAllIndexes(areaType: number): number[] {
-        const indexes: number[] = [];
-        // for (let i = 0; i < this._model.getAreaArray().length; i++) {
-        //     if (this._model.getAreaArray()[i] === areaType) indexes.push(i);
-        // }
-        return indexes;
+    private _add(container: PIXI.Container, area: number, shape: string): void {
+        this._controller.addShape(shape);
+        this._shapesArea += area;
+        this._app.stage.addChild(container);
+        this._shapesAmount++;
+        this._shapesAmountObserver.broadcast(this._shapesAmount.toString());
+        this._surfaceAreaObserver.broadcast(this._shapesArea.toFixed(2).toString());
     }
 
     private _getArea(shapeType: string): number {
@@ -256,11 +244,5 @@ export default class View {
             case "Triangle":
                 return Triangle.calculate();
         }
-    }
-
-    private _replaceShapes(indexes: number[], shape: Graphics): void {
-        const container: Container = (this._app.stage.getChildAt(indexes[0])) as Container;
-        container.removeChildAt(0);
-        container.addChild(shape);
     }
 }

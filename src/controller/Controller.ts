@@ -9,11 +9,19 @@ export default class Controller {
         new View(this);
     }
 
+    public getAllShapes(): string[] {
+        return this._model.getShapes();
+    }
+
     public addShape(shape: string): void {
         this._model.addShapeType(shape);
     }
 
     public removeShape(): string {
         return this._model.removeShapeType();
+    }
+
+    public removeShapeByIndex(index: number): string {
+        return this._model.removeByIndex(index);
     }
 }
